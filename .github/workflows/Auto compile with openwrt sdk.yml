@@ -52,7 +52,6 @@ jobs:
           echo "has_update: ${has_update}"
 
       - name: Prepare release
-        if: steps.check_version.outputs.has_update == 'true'
         run: |
           echo "## :mega:Update content" >> release.txt
           echo "![](https://img.shields.io/github/downloads/${{ env.passwall }}/${{steps.check_version.outputs.latest_version}}/total?style=flat-square)" >> release.txt
@@ -62,7 +61,6 @@ jobs:
           touch release.txt
 
       - name: Generate new tag & release
-        if: steps.check_version.outputs.has_update == 'true'
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -74,7 +72,6 @@ jobs:
   job_build_passwall:
     name: Build passwall
     needs: job_check
-    if: needs.job_check.outputs.has_update == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Install packages
@@ -171,7 +168,6 @@ jobs:
 
 
   job_auto_compile:
-    if: needs.job_check.outputs.has_update == 'true'
     needs: job_check
     runs-on: ubuntu-latest
     name: build (${{ matrix.platform }})
